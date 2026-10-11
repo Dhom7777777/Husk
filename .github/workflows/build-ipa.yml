@@ -39,7 +39,22 @@ jobs:
           restore-keys: husk-deps-
 
       - name: Build everything and package the IPA
-        run: ./scripts/ci_build.sh "$PWD/build/Husk.ipa"
+        run: |
+          mkdir -p build
+          set -o pipefail
+          ./scripts/ci_build.sh "$PWD/build/Husk.ipa" 2>&1 | tee build/ci.log
+
+      # Put the tail of the failing log into the run's annotations, so the error is readable without downloading.
+      - name: Report failure
+        if: failure()
+        run: |
+          for f in build/ci.log $(ls -t build/logs/* 2>/dev/null | head -1) /tmp/husk_ipa/build.log; do
+            [ -f "$f" ] || continue
+            msg="$(grep -nE 'error|FAIL|fatal|No such|not found' "$f" | tail -12 | cut -c1-300 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=$f::$msg"
+            tail=$(tail -15 "$f" | cut -c1-300 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=tail of $f::$tail"
+          done
 
       - name: Save dependency cache
         if: always() && steps.cache.outputs.cache-hit != 'true'
