@@ -51,7 +51,7 @@ jobs:
         run: |
           for f in build/ci.log $(ls -t build/logs/* 2>/dev/null | head -1) /tmp/husk_ipa/build.log; do
             [ -f "$f" ] || continue
-            msg="$(grep -nE 'error|FAIL|fatal|No such|not found' "$f" | tail -12 | cut -c1-300 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            msg="$(grep -E ' error: |FAIL|fatal|No such' "$f" | sed 's#.*/Husk/##' | sort -u | head -25 | cut -c1-300 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
             echo "::error title=$f::$msg"
             tail=$(tail -15 "$f" | cut -c1-300 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
             echo "::error title=tail of $f::$tail"
