@@ -37,7 +37,7 @@ enum PlayDevice {
         let id = Locale.current.identifier.replacingOccurrences(of: "-", with: "_")
         return id.contains("_") ? id : "en_US"
     }
-    static var country: String { (Locale.current.region?.identifier ?? "US").lowercased() }
+    static var country: String { (Locale.current.regionCode ?? "US").lowercased() }
 
     static let sharedLibraries = [
         "android.ext.shared", "android.hidl.base-V1.0-java", "android.hidl.manager-V1.0-java", "android.net.ipsec.ike",
