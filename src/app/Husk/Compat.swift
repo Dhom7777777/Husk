@@ -137,6 +137,12 @@ extension View {
     }
 }
 
+private struct HRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label.opacity(configuration.isPressed ? 0.6 : 1).contentShape(Rectangle())
+    }
+}
+
 /// `NavigationLink(value:label:)`.
 struct HNavLink<V: Hashable, Label: View>: View {
     let value: V
@@ -152,11 +158,10 @@ struct HNavLink<V: Hashable, Label: View>: View {
         if #available(iOS 16.0, *) {
             NavigationLink(value: value) { label }
         } else {
-            // An always-inactive link keeps the row styling (chevron); tapping asks the stack to push.
-            NavigationLink(
-                isActive: Binding(get: { false }, set: { if $0 { push?(AnyHashable(value)) } }),
-                destination: { EmptyView() },
-                label: { label })
+            // A plain button that asks the stack to push. (A NavigationLink with a dummy destination pushed an extra
+            // blank page on iOS 15, so the real navigation is only ever done by the stack's own path.)
+            Button { push?(AnyHashable(value)) } label: { label }
+                .buttonStyle(HRowButtonStyle())
         }
     }
 }
