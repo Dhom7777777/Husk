@@ -5,6 +5,9 @@ on:
   push:
     branches: [main, ios15]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-26
@@ -75,6 +78,13 @@ jobs:
             build/Husk.ipa
             build/Husk.tipa
           if-no-files-found: error
+
+      - name: Publish release with direct download links
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete ios15-latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create ios15-latest build/Husk.ipa build/Husk.tipa --title "Husk (iOS 15+)" --notes "Unsigned IPA for AltStore/SideStore and TIPA for TrollStore." --target "$GITHUB_SHA"
 
       - name: Upload logs (on failure)
         if: failure()
