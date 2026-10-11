@@ -23,6 +23,7 @@ jobs:
       - name: Install build tools
         run: |
           brew install meson ninja pkg-config xcodegen qemu cmake autoconf automake libtool gettext
+          python3 -m pip install --break-system-packages pyyaml mako packaging setuptools tomli
           rustup target add aarch64-apple-ios
 
       # The dependency builds (QEMU, ANGLE, MoltenVK ...) take over an hour. They are cached even when a later
