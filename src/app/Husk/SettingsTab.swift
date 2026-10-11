@@ -7,7 +7,7 @@ struct SettingsTab: View {
     @AppStorage(AppWindows.defaultKey) private var multitask = false
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             List {
                 Section {
                     NavigationLink { AboutSettings() } label: { appCard }
@@ -37,7 +37,7 @@ struct SettingsTab: View {
                             }
                         } icon: {
                             RoundedRectangle(cornerRadius: 7, style: .continuous)
-                                .fill(Color.purple.gradient)
+                                .fill(Color.purple.hGradient)
                                 .frame(width: 30, height: 30)
                                 .overlay {
                                     Image(systemName: "macwindow.on.rectangle")
@@ -87,7 +87,7 @@ struct SettingsTab: View {
                 }
             } icon: {
                 RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    .fill(tint.gradient)
+                    .fill(tint.hGradient)
                     .frame(width: 30, height: 30)
                     .overlay {
                         Image(systemName: icon)
@@ -787,9 +787,9 @@ struct AboutSettings: View {
             }
 
             Section {
-                LabeledContent("Build", value: Bundle.main.commit)
-                LabeledContent("Guest image", value: GuestImage.imageVersion)
-                LabeledContent("Renderer",
+                HLabeledContent("Build", value: Bundle.main.commit)
+                HLabeledContent("Guest image", value: GuestImage.imageVersion)
+                HLabeledContent("Renderer",
                                value: runner.displayKind == .gl ? "GPU"
                                     : runner.displayKind == .software ? "CPU"
                                     : "Not started")

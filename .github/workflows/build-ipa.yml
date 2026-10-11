@@ -1,0 +1,71 @@
+name: Build IPA (iOS 15+)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, ios15]
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          XC="$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          echo "Using $XC"
+          sudo xcode-select -s "$XC/Contents/Developer"
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Install build tools
+        run: |
+          brew install meson ninja pkg-config xcodegen qemu cmake autoconf automake libtool gettext
+          rustup target add aarch64-apple-ios
+
+      # The dependency builds (QEMU, ANGLE, MoltenVK ...) take over an hour. They are cached even when a later
+      # step fails, so a re-run after fixing an app compile error does not start from zero.
+      - name: Restore dependency cache
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            third_party
+            build
+            guests
+          key: husk-deps-${{ hashFiles('scripts/*.sh', 'src/ios-jit/**', 'src/art-support/**') }}
+          restore-keys: husk-deps-
+
+      - name: Build everything and package the IPA
+        run: ./scripts/ci_build.sh "$PWD/build/Husk.ipa"
+
+      - name: Save dependency cache
+        if: always() && steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            third_party
+            build
+            guests
+          key: husk-deps-${{ hashFiles('scripts/*.sh', 'src/ios-jit/**', 'src/art-support/**') }}
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Husk-ipa
+          path: |
+            build/Husk.ipa
+            build/Husk.tipa
+          if-no-files-found: error
+
+      - name: Upload logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            build/logs
+            /tmp/husk_ipa/build.log
+          if-no-files-found: ignore

@@ -141,7 +141,7 @@ struct HomeView: View {
     private var all: [LibraryItem] { Launcher.byRecent(Launcher.items(store: store, host: host)) }
 
     var body: some View {
-        NavigationStack(path: $router.home) {
+        HNavStack(path: $router.home) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(spacing: 10) {
@@ -186,7 +186,7 @@ struct HomeView: View {
                             .padding(.top, 6)
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 10) {
                             ForEach(rest.prefix(UIDevice.current.userInterfaceIdiom == .pad ? 16 : 8)) { item in
-                                NavigationLink(value: item.route) { LibrarySquare(item: item) }
+                                HNavLink(value: item.route) { LibrarySquare(item: item) }
                                     .buttonStyle(CardButtonStyle())
                                     .accessibilityLabel(item.title)
                             }
@@ -198,9 +198,9 @@ struct HomeView: View {
                 .padding(.bottom, 32)
                 .id(jit.attachGeneration)
             }
-            .scrollIndicators(.hidden)
+            .hScrollIndicatorsHidden()
             .background(Color(uiColor: .systemBackground).ignoresSafeArea())
-            .toolbar(.hidden, for: .navigationBar)
+            .hNavBarHidden(true)
             .libraryDestinations()
         }
     }
@@ -241,7 +241,7 @@ private struct LeadTile: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            NavigationLink(value: item.route) {
+            HNavLink(value: item.route) {
                 ItemBackdrop(item: item)
                     .frame(height: 150)
                     .frame(maxWidth: .infinity)
@@ -249,7 +249,7 @@ private struct LeadTile: View {
             }
             .buttonStyle(.plain)
             HStack(spacing: 12) {
-                NavigationLink(value: item.route) {
+                HNavLink(value: item.route) {
                     HStack(spacing: 12) {
                         ItemIcon(item: item, size: 40)
                         VStack(alignment: .leading, spacing: 2) {
@@ -373,7 +373,7 @@ private struct AndroidTile: View {
     var body: some View {
         Tile(padding: 14) {
             HStack(spacing: 12) {
-                NavigationLink(value: LibraryItem.android.route) {
+                HNavLink(value: LibraryItem.android.route) {
                     HStack(spacing: 12) {
                         TileGlyph(systemImage: "apps.iphone", color: AndroidMark.green, size: 40)
                         VStack(alignment: .leading, spacing: 2) {
@@ -535,7 +535,7 @@ struct AndroidMark: View {
             .font(.system(size: size * 0.46, weight: .semibold))
             .foregroundStyle(.white)
             .frame(width: size, height: size)
-            .background(Self.green.gradient, in: RoundedRectangle(cornerRadius: size * 0.225, style: .continuous))
+            .background(Self.green.hGradient, in: RoundedRectangle(cornerRadius: size * 0.225, style: .continuous))
     }
 }
 
@@ -544,7 +544,7 @@ struct AndroidBadge: View {
     var body: some View {
         Text("ANDROID")
             .font(.system(size: 8, weight: .heavy, design: .rounded))
-            .tracking(0.4)
+            .hTracking(0.4)
             .foregroundStyle(Color(red: 0.03, green: 0.13, blue: 0.06))
             .padding(.horizontal, 5).padding(.vertical, 2)
             .background(AndroidMark.green, in: Capsule())
@@ -562,7 +562,7 @@ struct LibraryScreen: View {
     @State private var query = ""
 
     var body: some View {
-        NavigationStack(path: $router.library) {
+        HNavStack(path: $router.library) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
@@ -601,10 +601,10 @@ struct LibraryScreen: View {
                 .padding(.top, 8)
                 .padding(.bottom, 32)
             }
-            .scrollIndicators(.hidden)
-            .scrollDismissesKeyboard(.immediately)
+            .hScrollIndicatorsHidden()
+            .hDismissKeyboardOnScroll()
             .background(Color(uiColor: .systemBackground).ignoresSafeArea())
-            .toolbar(.hidden, for: .navigationBar)
+            .hNavBarHidden(true)
             .libraryDestinations()
         }
     }
@@ -625,7 +625,7 @@ struct LibraryScreen: View {
                                                  count: UIDevice.current.userInterfaceIdiom == .pad ? 8 : 4),
                                   spacing: 18) {
                             ForEach(items) { item in
-                                NavigationLink(value: item.route) {
+                                HNavLink(value: item.route) {
                                     LauncherTile(title: item.title, iconPath: item.iconPath, item: item, caption: caption(item), size: 60)
                                 }
                                 .buttonStyle(CardButtonStyle())
@@ -744,7 +744,7 @@ struct SearchField: View {
                 TextField(prompt, text: $text)
                     .focused($focused)
                     .submitLabel(.search)
-                    .autocorrectionDisabled()
+                    .disableAutocorrection(true)
                     .textInputAutocapitalization(.never)
                 if !text.isEmpty {
                     Button { text = "" } label: {
@@ -789,8 +789,8 @@ func matches(_ query: String, _ names: String...) -> Bool {
 extension View {
     /// The pages an item opens, for whichever stack shows it.
     func libraryDestinations() -> some View {
-        navigationDestination(for: LibraryRoute.self) { route in
-            LibraryRouteView(route: route).toolbar(.visible, for: .navigationBar)
+        hNavDestination(for: LibraryRoute.self) { route in
+            LibraryRouteView(route: route).hNavBarHidden(false)
         }
     }
 }

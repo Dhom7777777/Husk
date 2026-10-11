@@ -114,9 +114,9 @@ struct AppDetailView: View {
             }
 
             Section {
-                LabeledContent("Version", value: live.version ?? "—")
-                LabeledContent("Size", value: live.sizeBytes.map(Self.bytes) ?? "—")
-                LabeledContent("Last Used", value: live.lastUsed.map(Self.when) ?? "Never from Husk")
+                HLabeledContent("Version", value: live.version ?? "—")
+                HLabeledContent("Size", value: live.sizeBytes.map(Self.bytes) ?? "—")
+                HLabeledContent("Last Used", value: live.lastUsed.map(Self.when) ?? "Never from Husk")
             }
 
             Section {
@@ -136,7 +136,7 @@ struct AppDetailView: View {
         .listStyle(.insetGrouped)
         .navigationTitle(live.label)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar { ToolbarItem(placement: .topBarTrailing) { menu } }
+        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { menu } }
         .confirmationDialog("Uninstall \(live.label)?", isPresented: $confirmUninstall,
                             titleVisibility: .visible) {
             Button("Uninstall", role: .destructive) {

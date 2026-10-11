@@ -66,7 +66,7 @@ angle_build () {
         WEBCORE_LIBRARY_DIR="/usr/local/lib" NORMAL_UMBRELLA_FRAMEWORKS_DIR="" \
         CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
         WK_AVAILABILITY_OVERLAY_FLAGS="" WK_AVAILABILITY_OVERLAY_SWIFT_FLAGS="" \
-        IPHONEOS_DEPLOYMENT_TARGET="15.5" \
+        IPHONEOS_DEPLOYMENT_TARGET="15.0" \
         OTHER_CFLAGS='$(inherited) -Wno-unguarded-availability-new' \
         OTHER_CPLUSPLUSFLAGS='$(inherited) -Wno-unguarded-availability-new' \
         ${ldflags[@]+"${ldflags[@]}"} \

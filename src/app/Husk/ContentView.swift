@@ -163,8 +163,8 @@ struct ContentView: View {
         .sheet(isPresented: Binding(get: { !incoming.waiting.isEmpty },
                                     set: { if !$0 { incoming.discard() } })) {
             IncomingChooser()
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
+                .hPresentationDetents([.medium])
+                .hDragIndicator()
         }
         // APKs meant for Android wait until it can take them.
         .onChange(of: host.isReady) { ready in
@@ -469,10 +469,10 @@ struct GuestScreenView: View {
         // document picker is up, and an importer attached to a view that goes
         // away goes away with it.
         .statusBarHidden(true)
-        .persistentSystemOverlays(.hidden)
+        .hHideSystemOverlays()
         .sheet(isPresented: $showControls) {
             ControlsSheet(keyboard: $keyboard)
-                .presentationDetents([.height(300)])
+                .hPresentationDetents([.height(300)])
         }
     }
 }
@@ -491,7 +491,7 @@ struct LogView: View {
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 1) {

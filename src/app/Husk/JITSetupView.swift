@@ -20,9 +20,9 @@ struct JITSetupFlow: View {
     private var device: String { OnDevicePairing.deviceKind }
 
     var body: some View {
-        NavigationStack(path: $path) {
+        HNavStack(path: $path) {
             choose
-                .navigationDestination(for: Step.self) { step in
+                .hNavDestination(for: Step.self) { step in
                     switch step {
                     case .pairOnDevice: pairOnDevice
                     case .importFile: importFile
@@ -207,7 +207,7 @@ struct JITSetupFlow: View {
             VStack(spacing: 8) {
                 Text("Enter this code on your \(device)").font(.system(size: 14))
                     .foregroundStyle(Theme.textDim)
-                Text(pin).font(.system(size: 40, weight: .bold, design: .monospaced)).tracking(6)
+                Text(pin).font(.system(size: 40, weight: .bold, design: .monospaced)).hTracking(6)
                     .foregroundStyle(Theme.text)
                     .textSelection(.enabled)
                     .accessibilityLabel("Pairing code \(pin.map(String.init).joined(separator: " "))")

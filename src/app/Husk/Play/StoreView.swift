@@ -12,7 +12,7 @@ struct StoreView: View {
     @State private var selectedApp: PlayAPI.PlayApp?
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             Group {
                 if !manager.isSignedIn {
                     signedOutState
@@ -28,7 +28,7 @@ struct StoreView: View {
             .navigationBarTitleDisplayMode(.large)
             .searchable(text: $searchText, prompt: "Search Google Play")
             .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
                     if manager.isSignedIn {
                         Menu {
                             if let s = manager.session {
@@ -317,7 +317,7 @@ struct PlayAppDetailSheet: View {
     @ObservedObject private var manager = PlayStoreManager.shared
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // Header: Icon, Title, Developer, Get Button

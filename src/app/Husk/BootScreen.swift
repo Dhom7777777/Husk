@@ -59,7 +59,7 @@ struct BootScreen: View {
 
                 Text("HUSK")
                     .font(.system(size: 22, weight: .semibold))
-                    .tracking(9)
+                    .hTracking(9)
                     .foregroundStyle(Theme.text)
                     .padding(.leading, 9)
                     .padding(.top, 18)

@@ -10,7 +10,7 @@ struct DownloadsTab: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             List {
                 updatesSection
                 Section {
@@ -133,13 +133,13 @@ private struct AddDownloadSheet: View {
     @State private var working = false
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             Form {
                 Section {
                     TextField("https://… or http://192.168.1.20:8642/", text: $link)
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
+                        .disableAutocorrection(true)
                 } footer: {
                     if let problem = downloads.problem { Text(problem).foregroundStyle(.orange) }
                 }

@@ -13,7 +13,7 @@ struct GoogleSignInSheet: View {
     @State private var promptError: String?
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             ZStack {
                 Theme.backdrop.ignoresSafeArea()
 

@@ -167,7 +167,7 @@ struct CrashReportSheet: View {
     @State private var file: URL?
 
     var body: some View {
-        NavigationStack {
+        HNavStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     HStack(spacing: 14) {
@@ -193,7 +193,7 @@ struct CrashReportSheet: View {
                     }
 
                     if let file {
-                        ShareLink(item: file) {
+                        HShareLink(item: file) {
                             Label("Share Report", systemImage: "square.and.arrow.up")
                                 .frame(maxWidth: .infinity).padding(.vertical, 6)
                         }

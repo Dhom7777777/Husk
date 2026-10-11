@@ -16,6 +16,19 @@ enum HuskOrientation {
     /// a moment apart, for as long as `new` is still what is wanted.
     @MainActor static func set(_ new: UIInterfaceOrientationMask, attempt: Int = 0) {
         mask = new
+        guard #available(iOS 16.0, *) else {
+            // iOS 15 has no geometry request: turn the device's orientation by hand, then let UIKit re-read the mask.
+            let target: UIInterfaceOrientation?
+            if new.contains(.portrait) && new.contains(.landscape) { target = nil }
+            else if new.contains(.landscapeRight) { target = .landscapeRight }
+            else if new.contains(.landscapeLeft) { target = .landscapeLeft }
+            else { target = .portrait }
+            if let target {
+                UIDevice.current.setValue(target.rawValue, forKey: "orientation")
+            }
+            UIViewController.attemptRotationToDeviceOrientation()
+            return
+        }
         for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
             var vc = scene.keyWindow?.rootViewController
             while let v = vc { v.setNeedsUpdateOfSupportedInterfaceOrientations(); vc = v.presentedViewController }

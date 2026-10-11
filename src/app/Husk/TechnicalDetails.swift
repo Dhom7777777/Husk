@@ -138,7 +138,7 @@ struct TLTechnicalView: View {
     }
 
     private func row(_ label: String, _ value: String, mono: Bool = false) -> some View {
-        LabeledContent {
+        HLabeledContent {
             Text(value)
                 .font(mono ? .system(.footnote, design: .monospaced) : .body)
                 .multilineTextAlignment(.trailing)
